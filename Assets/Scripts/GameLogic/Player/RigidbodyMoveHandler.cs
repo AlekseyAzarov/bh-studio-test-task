@@ -26,7 +26,7 @@ namespace GameLogic
         public override void Move(Vector3 direction, float speed)
         {
             direction = _rigidbody.rotation * direction;
-            _rigidbody.velocity = direction * speed;
+            _rigidbody.velocity = direction.normalized * speed;
         }
 
         public override void RotateY(float yRotation)
