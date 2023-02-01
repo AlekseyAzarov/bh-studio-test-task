@@ -7,9 +7,9 @@ namespace GameLogic
     [RequireComponent(typeof(Rigidbody))]
     public class RigidbodyMoveHandler : AbstractMoveHandler
     {
-        private Vector3 _direction;
-        private float _speed;
-        private float _yRotation;
+        [SyncVar] private Vector3 _direction;
+        [SyncVar] private float _yRotation;
+        [SyncVar] private float _speed;
 
         private Rigidbody _rigidbody;
 
@@ -18,25 +18,46 @@ namespace GameLogic
             _rigidbody = GetComponent<Rigidbody>();
         }
 
+        private void FixedUpdate()
+        {
+            if (!isLocalPlayer) return;
+
+            _rigidbody.MoveRotation(Quaternion.Euler(0f, _yRotation, 0f));
+            var direction = _rigidbody.rotation * _direction;
+            _rigidbody.velocity = direction.normalized * _speed;
+        }
+
+        [Server]
         public override void Stop()
         {
-            _rigidbody.velocity = Vector3.zero;
+            _direction = Vector3.zero;
         }
 
+        [Server]
         public override void Move(Vector3 direction, float speed)
         {
-            direction = _rigidbody.rotation * direction;
-            _rigidbody.velocity = direction.normalized * speed;
+            _direction = direction;
+            _speed = speed;
         }
 
+        [Server]
         public override void RotateY(float yRotation)
         {
-            _rigidbody.MoveRotation(Quaternion.Euler(0f, yRotation, 0f));
+            _yRotation = yRotation;
         }
 
         public override bool IsMoving()
         {
-            return _rigidbody.velocity.magnitude > 0f;
+            return _direction.magnitude > 0f && _speed > 0f;
+        }
+
+        private void OnMoveParametersChanged(object oldValue, object newValue)
+        {
+            if (!isLocalPlayer) return;
+
+            _rigidbody.MoveRotation(Quaternion.Euler(0f, _yRotation, 0f));
+            var direction = _rigidbody.rotation * _direction;
+            _rigidbody.velocity = direction * _speed;
         }
     }
 }

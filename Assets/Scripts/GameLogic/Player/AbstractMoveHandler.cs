@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    public abstract class AbstractMoveHandler : MonoBehaviour
+    public abstract class AbstractMoveHandler : NetworkBehaviour
     {
         public abstract void Stop();
         public abstract void Move(Vector3 direction, float speed);

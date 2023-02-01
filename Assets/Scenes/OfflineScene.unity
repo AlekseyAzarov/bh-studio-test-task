@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5002089906489194721, guid: 71c2add0d6c0f344083aa564b36f8257, type: 3}
       propertyPath: minPlayers
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5002089906489194721, guid: 71c2add0d6c0f344083aa564b36f8257, type: 3}
       propertyPath: _playerConfigurator
